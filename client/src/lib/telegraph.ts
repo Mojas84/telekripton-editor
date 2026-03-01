@@ -12,7 +12,6 @@ export interface TelegraphAccount {
   author_url?: string;
   access_token?: string;
   auth_url?: string;
-  page_count?: number;
 }
 
 export interface TelegraphPage {
@@ -64,32 +63,7 @@ export async function createAccount(
   } catch (error) {
     return {
       ok: false,
-      error: `Failed to create account: ${error instanceof Error ? error.message : 'Unknown error'}`,
-    };
-  }
-}
-
-/**
- * Get account information
- */
-export async function getAccountInfo(
-  accessToken: string,
-  fields?: string[]
-): Promise<TelegraphResponse<TelegraphAccount>> {
-  const params = new URLSearchParams({
-    access_token: accessToken,
-    ...(fields && { fields: JSON.stringify(fields) }),
-  });
-
-  try {
-    const response = await fetch(`${TELEGRAPH_API_BASE}/getAccountInfo?${params}`, {
-      method: 'GET',
-    });
-    return await response.json();
-  } catch (error) {
-    return {
-      ok: false,
-      error: `Failed to get account info: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      error: `Chyba při vytváření účtu: ${error instanceof Error ? error.message : 'Neznámá chyba'}`,
     };
   }
 }
@@ -206,15 +180,14 @@ function parseInlineMarkdown(text: string): TelegraphNode[] {
 }
 
 /**
- * Create a new Telegraph page (publish article)
+ * Publish a page with access token
  */
-export async function createPage(
+export async function publishPage(
   accessToken: string,
   title: string,
   content: TelegraphNode[],
   authorName?: string,
-  authorUrl?: string,
-  returnContent: boolean = true
+  authorUrl?: string
 ): Promise<TelegraphResponse<TelegraphPage>> {
   const body = new FormData();
   body.append('access_token', accessToken);
@@ -222,7 +195,7 @@ export async function createPage(
   body.append('content', JSON.stringify(content));
   if (authorName) body.append('author_name', authorName);
   if (authorUrl) body.append('author_url', authorUrl);
-  body.append('return_content', returnContent ? 'true' : 'false');
+  body.append('return_content', 'true');
 
   try {
     const response = await fetch(`${TELEGRAPH_API_BASE}/createPage`, {
@@ -233,41 +206,7 @@ export async function createPage(
   } catch (error) {
     return {
       ok: false,
-      error: `Failed to create page: ${error instanceof Error ? error.message : 'Unknown error'}`,
-    };
-  }
-}
-
-/**
- * Edit an existing Telegraph page
- */
-export async function editPage(
-  accessToken: string,
-  path: string,
-  title: string,
-  content: TelegraphNode[],
-  authorName?: string,
-  authorUrl?: string,
-  returnContent: boolean = true
-): Promise<TelegraphResponse<TelegraphPage>> {
-  const body = new FormData();
-  body.append('access_token', accessToken);
-  body.append('title', title);
-  body.append('content', JSON.stringify(content));
-  if (authorName) body.append('author_name', authorName);
-  if (authorUrl) body.append('author_url', authorUrl);
-  body.append('return_content', returnContent ? 'true' : 'false');
-
-  try {
-    const response = await fetch(`${TELEGRAPH_API_BASE}/editPage/${path}`, {
-      method: 'POST',
-      body,
-    });
-    return await response.json();
-  } catch (error) {
-    return {
-      ok: false,
-      error: `Failed to edit page: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      error: `Chyba při publikování: ${error instanceof Error ? error.message : 'Neznámá chyba'}`,
     };
   }
 }
@@ -291,34 +230,7 @@ export async function getPage(
   } catch (error) {
     return {
       ok: false,
-      error: `Failed to get page: ${error instanceof Error ? error.message : 'Unknown error'}`,
-    };
-  }
-}
-
-/**
- * Get list of pages for an account
- */
-export async function getPageList(
-  accessToken: string,
-  offset: number = 0,
-  limit: number = 50
-): Promise<TelegraphResponse<{ total_count: number; pages: TelegraphPage[] }>> {
-  const params = new URLSearchParams({
-    access_token: accessToken,
-    offset: offset.toString(),
-    limit: limit.toString(),
-  });
-
-  try {
-    const response = await fetch(`${TELEGRAPH_API_BASE}/getPageList?${params}`, {
-      method: 'GET',
-    });
-    return await response.json();
-  } catch (error) {
-    return {
-      ok: false,
-      error: `Failed to get page list: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      error: `Chyba při načítání stránky: ${error instanceof Error ? error.message : 'Neznámá chyba'}`,
     };
   }
 }
@@ -347,7 +259,7 @@ export async function getViews(
   } catch (error) {
     return {
       ok: false,
-      error: `Failed to get views: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      error: `Chyba při načítání počtu zobrazení: ${error instanceof Error ? error.message : 'Neznámá chyba'}`,
     };
   }
 }

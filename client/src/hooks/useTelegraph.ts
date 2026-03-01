@@ -1,8 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   createAccount,
-  createPage,
-  getAccountInfo,
+  publishPage,
   markdownToTelegraphContent,
   TelegraphAccount,
   TelegraphPage,
@@ -18,7 +17,7 @@ export interface UseTelegraphState {
 }
 
 export interface UseTelegraphActions {
-  initializeAccount: (shortName: string, authorName?: string, authorUrl?: string) => Promise<void>;
+  initializeAccount: (shortName: string, authorName?: string) => Promise<void>;
   publishArticle: (title: string, content: string, authorName?: string) => Promise<TelegraphPage | null>;
   logout: () => void;
 }
@@ -26,8 +25,8 @@ export interface UseTelegraphActions {
 export type UseTelegraphReturn = UseTelegraphState & UseTelegraphActions;
 
 /**
- * Hook for managing Telegraph account and publishing
- * Automatically loads saved account from localStorage on mount
+ * Hook pro správu Telegraph účtu a publikování
+ * Automaticky načítá uložený účet z localStorage
  */
 export function useTelegraph(): UseTelegraphReturn {
   const [account, setAccount] = useState<TelegraphAccount | null>(null);
@@ -35,7 +34,7 @@ export function useTelegraph(): UseTelegraphReturn {
   const [error, setError] = useState<string | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
 
-  // Load saved account from localStorage on mount
+  // Načti uložený účet z localStorage
   useEffect(() => {
     const savedAccount = localStorage.getItem(STORAGE_KEY);
     if (savedAccount) {
@@ -43,7 +42,7 @@ export function useTelegraph(): UseTelegraphReturn {
         const parsed = JSON.parse(savedAccount);
         setAccount(parsed);
       } catch (e) {
-        console.error('Failed to parse saved account:', e);
+        console.error('Chyba při parsování uloženého účtu:', e);
       }
     }
     setIsInitialized(true);
@@ -51,23 +50,22 @@ export function useTelegraph(): UseTelegraphReturn {
 
   const initializeAccount = async (
     shortName: string,
-    authorName?: string,
-    authorUrl?: string
+    authorName?: string
   ) => {
     setLoading(true);
     setError(null);
 
     try {
-      const response = await createAccount(shortName, authorName, authorUrl);
+      const response = await createAccount(shortName, authorName || 'Anonym');
 
       if (!response.ok || !response.result) {
-        throw new Error(response.error || 'Failed to create account');
+        throw new Error(response.error || 'Chyba při vytváření účtu');
       }
 
       setAccount(response.result);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(response.result));
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+      const errorMessage = err instanceof Error ? err.message : 'Neznámá chyba';
       setError(errorMessage);
       throw err;
     } finally {
@@ -81,7 +79,7 @@ export function useTelegraph(): UseTelegraphReturn {
     authorName?: string
   ): Promise<TelegraphPage | null> => {
     if (!account?.access_token) {
-      setError('No Telegraph account. Please initialize first.');
+      setError('Žádný Telegraph účet. Prosím vytvořte nejdřív účet.');
       return null;
     }
 
@@ -89,26 +87,25 @@ export function useTelegraph(): UseTelegraphReturn {
     setError(null);
 
     try {
-      // Convert markdown content to Telegraph format
+      // Převeď markdown na Telegraph formát
       const telegraphContent = markdownToTelegraphContent(content);
 
-      // Create page
-      const response = await createPage(
+      // Publikuj stránku
+      const response = await publishPage(
         account.access_token,
         title,
         telegraphContent,
         authorName || account.author_name,
-        account.author_url,
-        true
+        account.author_url
       );
 
       if (!response.ok || !response.result) {
-        throw new Error(response.error || 'Failed to publish article');
+        throw new Error(response.error || 'Chyba při publikování');
       }
 
       return response.result;
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+      const errorMessage = err instanceof Error ? err.message : 'Neznámá chyba';
       setError(errorMessage);
       throw err;
     } finally {
