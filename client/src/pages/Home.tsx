@@ -199,7 +199,7 @@ export default function Home() {
             <div>
               <div className="flex items-center gap-4">
                 <img src="/krtecek_vesper.png" alt="Mascot" className="w-12 h-12 object-contain" />
-                <h1 className="text-4xl font-bold text-[#FFFFFF] font-mono tracking-wider">
+                <h1 className="text-4xl font-bold text-[#99FFE4] font-mono tracking-wider">
                   Vespergraph
                 </h1>
               </div>
