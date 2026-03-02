@@ -42,6 +42,74 @@ export interface TelegraphResponse<T> {
 }
 
 /**
+ * Convert Telegraph content nodes to markdown-like text
+ */
+export function telegraphContentToMarkdown(nodes: TelegraphNode[]): string {
+  let markdown = "";
+
+  for (const node of nodes) {
+    if (typeof node === "string") {
+      markdown += node;
+    } else {
+      switch (node.tag) {
+        case "p":
+          if (node.children) {
+            markdown += parseTelegraphNodes(node.children) + "\n\n";
+          }
+          break;
+        case "h3":
+          if (node.children) {
+            markdown += "# " + parseTelegraphNodes(node.children) + "\n\n";
+          }
+          break;
+        case "h4":
+          if (node.children) {
+            markdown += "## " + parseTelegraphNodes(node.children) + "\n\n";
+          }
+          break;
+        // Add more cases for other tags if needed
+        default:
+          if (node.children) {
+            markdown += parseTelegraphNodes(node.children);
+          }
+          break;
+      }
+    }
+  }
+  return markdown.trim();
+}
+
+function parseTelegraphNodes(nodes: TelegraphNode[]): string {
+  let result = "";
+  for (const node of nodes) {
+    if (typeof node === "string") {
+      result += node;
+    } else {
+      switch (node.tag) {
+        case "strong":
+          if (node.children) result += `**${parseTelegraphNodes(node.children)}**`;
+          break;
+        case "em":
+          if (node.children) result += `*${parseTelegraphNodes(node.children)}*`;
+          break;
+        case "code":
+          if (node.children) result += `\`${parseTelegraphNodes(node.children)}\``;
+          break;
+        case "a":
+          if (node.attrs?.href && node.children) {
+            result += `[${parseTelegraphNodes(node.children)}](${node.attrs.href})`;
+          }
+          break;
+        default:
+          if (node.children) result += parseTelegraphNodes(node.children);
+          break;
+      }
+    }
+  }
+  return result;
+}
+
+/**
  * Create a new Telegraph account
  */
 export async function createAccount(

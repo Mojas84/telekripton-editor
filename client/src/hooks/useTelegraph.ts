@@ -22,6 +22,7 @@ export interface UseTelegraphActions {
   publishArticle: (title: string, content: string, authorName?: string) => Promise<TelegraphPage | null>;
   editArticle: (path: string, title: string, content: string, authorName?: string) => Promise<TelegraphPage | null>;
   logout: () => void;
+  getPage: (path: string, returnContent?: boolean) => Promise<TelegraphPage | null>;
 }
 
 export type UseTelegraphReturn = UseTelegraphState & UseTelegraphActions;
@@ -168,5 +169,6 @@ export function useTelegraph(): UseTelegraphReturn {
     publishArticle,
     editArticle,
     logout,
+    getPage,
   };
 }

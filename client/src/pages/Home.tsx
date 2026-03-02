@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { telegraphContentToMarkdown } from '@/lib/telegraph';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -110,8 +111,8 @@ export default function Home() {
         }
 
         // Clear form
-        setTitle('');
-        setContent('');
+// setTitle('');
+// setContent('');
       }
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Chyba při publikování');
@@ -122,11 +123,28 @@ export default function Home() {
 
   const handleEdit = (entry: HistoryEntry) => {
     setTitle(entry.title);
-    setContent('');
+    // setContent(""); // Bude načteno z API
     setEditingPath(entry.path);
     setActiveTab('editor');
     setPublishedUrl(entry.url);
-    toast.info('Načítám článek pro editaci...');
+    toast.info("Načítám článek pro editaci...");
+    fetchArticleContent(entry.path);
+  };
+
+  const fetchArticleContent = async (path: string) => {
+    try {
+      const page = await telegraph.getPage(path, true);
+      if (page && page.content) {
+        // Convert Telegraph content nodes back to markdown
+        const markdownContent = telegraphContentToMarkdown(page.content);
+        setContent(markdownContent);
+      } else {
+        toast.error("Nepodařilo se načíst obsah článku.");
+      }
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Chyba při načítání obsahu článku.");
+    }
+  };
   };
 
   const handleCancelEdit = () => {
