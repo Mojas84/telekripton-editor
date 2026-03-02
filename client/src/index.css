@@ -79,9 +79,9 @@
   /* Vesper Dark with Liquid Glass Feeling */
   --background: #101010;
   --foreground: #FFFFFF;
-  --card: rgba(26, 26, 26, 0.6);
+  --card: rgba(16, 16, 16, 0.4);
   --card-foreground: #FFFFFF;
-  --popover: rgba(16, 16, 16, 0.8);
+  --popover: rgba(16, 16, 16, 0.5);
   --popover-foreground: #FFFFFF;
   --primary: #FFC799;
   --primary-foreground: #101010;
