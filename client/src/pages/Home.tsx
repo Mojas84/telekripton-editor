@@ -198,7 +198,7 @@ export default function Home() {
           <div className="flex items-center justify-between">
             <div>
               <div className="flex items-center gap-4">
-                <img src="/krtecek_vesper.png" alt="Mascot" className="w-12 h-12 object-contain" />
+                <img src="/krtecek_sonic_v2.png" alt="Mascot" className="w-12 h-12 object-contain" />
                 <h1 className="text-4xl font-bold text-[#99FFE4] font-mono tracking-wider">
                   Vespergraph
                 </h1>
