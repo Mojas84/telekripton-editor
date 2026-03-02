@@ -212,6 +212,39 @@ export async function publishPage(
 }
 
 /**
+ * Edit an existing Telegraph page
+ */
+export async function editPage(
+  accessToken: string,
+  path: string,
+  title: string,
+  content: TelegraphNode[],
+  authorName?: string,
+  authorUrl?: string
+): Promise<TelegraphResponse<TelegraphPage>> {
+  const body = new FormData();
+  body.append('access_token', accessToken);
+  body.append('title', title);
+  body.append('content', JSON.stringify(content));
+  if (authorName) body.append('author_name', authorName);
+  if (authorUrl) body.append('author_url', authorUrl);
+  body.append('return_content', 'true');
+
+  try {
+    const response = await fetch(`${TELEGRAPH_API_BASE}/editPage/${path}`, {
+      method: 'POST',
+      body,
+    });
+    return await response.json();
+  } catch (error) {
+    return {
+      ok: false,
+      error: `Chyba při editaci: ${error instanceof Error ? error.message : 'Neznámá chyba'}`,
+    };
+  }
+}
+
+/**
  * Get a Telegraph page
  */
 export async function getPage(

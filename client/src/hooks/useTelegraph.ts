@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import {
   createAccount,
   publishPage,
+  editPage,
   markdownToTelegraphContent,
   TelegraphAccount,
   TelegraphPage,
@@ -19,6 +20,7 @@ export interface UseTelegraphState {
 export interface UseTelegraphActions {
   initializeAccount: (shortName: string, authorName?: string) => Promise<void>;
   publishArticle: (title: string, content: string, authorName?: string) => Promise<TelegraphPage | null>;
+  editArticle: (path: string, title: string, content: string, authorName?: string) => Promise<TelegraphPage | null>;
   logout: () => void;
 }
 
@@ -87,10 +89,8 @@ export function useTelegraph(): UseTelegraphReturn {
     setError(null);
 
     try {
-      // Převeď markdown na Telegraph formát
       const telegraphContent = markdownToTelegraphContent(content);
 
-      // Publikuj stránku
       const response = await publishPage(
         account.access_token,
         title,
@@ -101,6 +101,46 @@ export function useTelegraph(): UseTelegraphReturn {
 
       if (!response.ok || !response.result) {
         throw new Error(response.error || 'Chyba při publikování');
+      }
+
+      return response.result;
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Neznámá chyba';
+      setError(errorMessage);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const editArticle = async (
+    path: string,
+    title: string,
+    content: string,
+    authorName?: string
+  ): Promise<TelegraphPage | null> => {
+    if (!account?.access_token) {
+      setError('Žádný Telegraph účet. Prosím vytvořte nejdřív účet.');
+      return null;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const telegraphContent = markdownToTelegraphContent(content);
+
+      const response = await editPage(
+        account.access_token,
+        path,
+        title,
+        telegraphContent,
+        authorName || account.author_name,
+        account.author_url
+      );
+
+      if (!response.ok || !response.result) {
+        throw new Error(response.error || 'Chyba při editaci');
       }
 
       return response.result;
@@ -126,6 +166,7 @@ export function useTelegraph(): UseTelegraphReturn {
     isInitialized,
     initializeAccount,
     publishArticle,
+    editArticle,
     logout,
   };
 }
