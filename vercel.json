@@ -1,19 +1,19 @@
 {
-    "version": 2,
-    "builds": [
-          {
-                  "src": "dist/index.js",
-                  "use": "@vercel/node"
-          }
-    ],
-    "routes": [
-          {
-                  "src": "/assets/(.*)",
-                  "dest": "/dist/public/assets/$1"
-          },
-          {
-                  "src": "/(.*)",
-                  "dest": "dist/index.js"
-          }
-    ]
+      "version": 2,
+      "builds": [
+              {
+                        "src": "server/index.ts",
+                        "use": "@vercel/node"
+              }
+      ],
+      "routes": [
+              {
+                        "src": "/assets/(.*)",
+                        "dest": "/dist/public/assets/$1"
+              },
+              {
+                        "src": "/(.*)",
+                        "dest": "server/index.ts"
+              }
+      ]
 }
