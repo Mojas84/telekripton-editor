@@ -1,20 +1,21 @@
 {
-        "version": 2,
-        "installCommand": "pnpm install --no-frozen-lockfile",
-        "builds": [
-                  {
-                              "src": "server/index.ts",
-                              "use": "@vercel/node"
-                  }
-        ],
-        "routes": [
-                  {
-                              "src": "/assets/(.*)",
-                              "dest": "/dist/public/assets/$1"
-                  },
-                  {
-                              "src": "/(.*)",
-                              "dest": "server/index.ts"
-                  }
-        ]
+          "version": 2,
+          "framework": null,
+          "installCommand": "pnpm install --no-frozen-lockfile",
+          "builds": [
+                      {
+                                    "src": "server/index.ts",
+                                    "use": "@vercel/node"
+                      }
+          ],
+          "routes": [
+                      {
+                                    "src": "/assets/(.*)",
+                                    "dest": "/dist/public/assets/$1"
+                      },
+                      {
+                                    "src": "/(.*)",
+                                    "dest": "server/index.ts"
+                      }
+          ]
 }
