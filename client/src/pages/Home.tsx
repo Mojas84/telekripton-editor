@@ -6,7 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 import { useTelegraph } from '@/hooks/useTelegraph';
 import { MarkdownPreview } from '@/components/MarkdownPreview';
-import { Loader2, Copy, ExternalLink, Edit2, X } from 'lucide-react';
+import { Loader2, Copy, ExternalLink, Edit2, X, Trash2 } from 'lucide-react';
 
 interface HistoryEntry {
   title: string;
@@ -28,6 +28,8 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState<'editor' | 'history'>('editor');
   const [editingPath, setEditingPath] = useState<string | null>(null);
   const [isLoadingContent, setIsLoadingContent] = useState(false);
+  const [isDeletingPath, setIsDeletingPath] = useState<string | null>(null);
+  const [deleteConfirmPath, setDeleteConfirmPath] = useState<string | null>(null);
 
   // Load history from localStorage
   useEffect(() => {
@@ -169,7 +171,23 @@ export default function Home() {
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
-    toast.success('Odkaz zkopírován!');
+    toast.success('Odkaz zkopirovan!');
+  };
+
+  const handleDeleteArticle = async (path: string) => {
+    setIsDeletingPath(path);
+    try {
+      await telegraph.deleteArticle(path);
+      const updatedHistory = history.filter(entry => entry.path !== path);
+      setHistory(updatedHistory);
+      localStorage.setItem('telegraph_history', JSON.stringify(updatedHistory));
+      toast.success('Clanek byl smazan!');
+      setDeleteConfirmPath(null);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Chyba pri mazani clanku');
+    } finally {
+      setIsDeletingPath(null);
+    }
   };
 
   return (
@@ -423,6 +441,18 @@ export default function Home() {
                           >
                             <ExternalLink className="w-4 h-4" />
                           </a>
+                          <button
+                            onClick={() => setDeleteConfirmPath(entry.path)}
+                            disabled={isDeletingPath === entry.path}
+                            className="p-2 bg-red-900/20 hover:bg-red-900/40 border border-red-500/30 text-red-500 rounded transition disabled:opacity-50"
+                            title="Smazat"
+                          >
+                            {isDeletingPath === entry.path ? (
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                            ) : (
+                              <Trash2 className="w-4 h-4" />
+                            )}
+                          </button>
                         </div>
                       </div>
                     </div>
@@ -447,6 +477,39 @@ export default function Home() {
           </div>
         </div>
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      {deleteConfirmPath && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-[#1C1C1C] border border-red-500/30 rounded-lg p-8 max-w-md w-full mx-4">
+            <h2 className="text-xl font-mono text-red-500 mb-4">Potvrdit smazani</h2>
+            <p className="text-[#FFC799]/80 mb-6">Opravdu chcete smazat tento clanek? Bude odstranen z Telegraphu a z vasi historie.</p>
+            <div className="flex gap-3">
+              <Button
+                onClick={() => handleDeleteArticle(deleteConfirmPath)}
+                disabled={isDeletingPath !== null}
+                className="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold font-mono"
+              >
+                {isDeletingPath ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Mazani...
+                  </>
+                ) : (
+                  <>Smazat</>
+                )}
+              </Button>
+              <Button
+                onClick={() => setDeleteConfirmPath(null)}
+                disabled={isDeletingPath !== null}
+                className="flex-1 bg-[#1C1C1C] hover:bg-[#2C2C2C] text-[#FFC799] border border-[#FFC799]/30 font-mono"
+              >
+                Zrusit
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Account Dialog */}
       {showAccountDialog && (

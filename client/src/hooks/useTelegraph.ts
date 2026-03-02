@@ -22,6 +22,7 @@ export interface UseTelegraphActions {
   initializeAccount: (shortName: string, authorName?: string) => Promise<void>;
   publishArticle: (title: string, content: string, authorName?: string) => Promise<TelegraphPage | null>;
   editArticle: (path: string, title: string, content: string, authorName?: string) => Promise<TelegraphPage | null>;
+  deleteArticle: (path: string) => Promise<boolean>;
   logout: () => void;
   getPage: (path: string, returnContent?: boolean) => Promise<TelegraphPage | null>;
 }
@@ -172,6 +173,41 @@ export function useTelegraph(): UseTelegraphReturn {
     }
   };
 
+  const deleteArticle = async (path: string): Promise<boolean> => {
+    if (!account?.access_token) {
+      setError('Zádný Telegraph účet. Prosím vytvořte nejdřív účet.');
+      return false;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      // First, overwrite the article with empty content to make it invisible
+      const emptyContent = [{ tag: 'p', children: ['[Obsah byl odstraněn]'] }];
+      const response = await editPage(
+        account.access_token,
+        path,
+        '[Smazáno]',
+        emptyContent,
+        account.author_name,
+        account.author_url
+      );
+
+      if (!response.ok) {
+        throw new Error(response.error || 'Chyba při mazání článku');
+      }
+
+      return true;
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Neznámá chyba';
+      setError(errorMessage);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const logout = () => {
     setAccount(null);
     setError(null);
@@ -186,6 +222,7 @@ export function useTelegraph(): UseTelegraphReturn {
     initializeAccount,
     publishArticle,
     editArticle,
+    deleteArticle,
     logout,
     getPage: getPageData,
   };
