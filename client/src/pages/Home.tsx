@@ -197,9 +197,12 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-4xl font-bold text-[#FFC799] font-mono tracking-wider">
-                TeleKripton Editor
-              </h1>
+              <div className="flex items-center gap-4">
+                <img src="/krtecek_sonic.png" alt="Mascot" className="w-12 h-12 object-contain" />
+                <h1 className="text-4xl font-bold text-[#FFFFFF] font-mono tracking-wider">
+                  Vespergraph
+                </h1>
+              </div>
               <p className="text-sm text-[#A0A0A0] mt-1">
                 Profesionální editor s integrovaným Vesper tématem
               </p>
@@ -262,7 +265,7 @@ export default function Home() {
                     placeholder="Zadejte nadpis..."
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
-                    className="bg-[#101010] border-[#FFFFFF]/10 shadow-sm transition-all focus:border-[#FFC799]/50 focus:ring-1 focus:ring-[#FFC799]/20 text-[#FFC799] placeholder:text-[#7E7E7E] font-mono"
+                    className="bg-[#101010] border-[#FFFFFF]/10 shadow-sm transition-all focus:border-[#FFC799]/50 focus:ring-1 focus:ring-[#FFC799]/20 text-[#FFFFFF] placeholder:text-[#7E7E7E] font-mono"
                   />
                 </div>
 
@@ -275,7 +278,7 @@ export default function Home() {
                     placeholder="Vaše jméno..."
                     value={authorName}
                     onChange={(e) => setAuthorName(e.target.value)}
-                    className="bg-[#101010] border-[#FFFFFF]/10 shadow-sm transition-all focus:border-[#FFC799]/50 focus:ring-1 focus:ring-[#FFC799]/20 text-[#FFC799] placeholder:text-[#7E7E7E] font-mono"
+                    className="bg-[#101010] border-[#FFFFFF]/10 shadow-sm transition-all focus:border-[#FFC799]/50 focus:ring-1 focus:ring-[#FFC799]/20 text-[#FFFFFF] placeholder:text-[#7E7E7E] font-mono"
                   />
                 </div>
 
@@ -308,7 +311,7 @@ export default function Home() {
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
                     disabled={isLoadingContent}
-                    className="bg-[#101010] border-[#FFFFFF]/10 shadow-sm transition-all focus:border-[#FFC799]/50 focus:ring-1 focus:ring-[#FFC799]/20 text-[#FFC799] placeholder:text-[#7E7E7E] font-mono min-h-96 resize-none disabled:opacity-50"
+                    className="bg-[#101010] border-[#FFFFFF]/10 shadow-sm transition-all focus:border-[#FFC799]/50 focus:ring-1 focus:ring-[#FFC799]/20 text-[#FFFFFF] placeholder:text-[#7E7E7E] font-mono min-h-96 resize-none disabled:opacity-50"
                   />
                   {isLoadingContent && (
                     <div className="flex items-center gap-2 mt-2 text-[#A0A0A0]">
