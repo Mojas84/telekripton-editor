@@ -191,27 +191,27 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#101010] via-[#1C1C1C] to-[#101010]">
+    <div className="min-h-screen bg-[#101010] text-[#FFFFFF]">
       {/* Header */}
-      <div className="border-b border-[#FFC799]/20 bg-black/40 backdrop-blur-sm">
+      <div className="border-b border-[#1A1A1A] bg-[#101010] backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-4xl font-bold text-[#FFC799] font-mono tracking-wider">
-                VESPERGRAPH
+                TeleKripton Editor
               </h1>
-              <p className="text-sm text-[#FFC799]/60 mt-1">
-                Telegraph editor s Vesper témou + live preview
+              <p className="text-sm text-[#A0A0A0] mt-1">
+                Profesionální editor s integrovaným Vesper tématem
               </p>
             </div>
             {telegraph.account && (
               <div className="text-right text-sm">
-                <p className="text-[#FFC799]/80">
+                <p className="text-[#A0A0A0]">
                   Účet: <span className="font-mono text-[#FFC799]">{telegraph.account.short_name}</span>
                 </p>
                 <button
                   onClick={() => telegraph.logout()}
-                  className="text-[#FFC799]/60 hover:text-[#FFC799] text-xs mt-2 underline"
+                  className="text-[#A0A0A0] hover:text-[#FFC799] text-xs mt-2 underline"
                 >
                   Odhlásit se
                 </button>
@@ -227,13 +227,13 @@ export default function Home() {
           {/* Editor Panel */}
           <div className="col-span-2 space-y-6">
             {/* Tabs */}
-            <div className="flex gap-2 border-b border-[#FFC799]/20">
+            <div className="flex gap-2 border-b border-[#1A1A1A]">
               <button
                 onClick={() => setActiveTab('editor')}
                 className={`px-4 py-2 border-b-2 font-mono text-sm transition ${
                   activeTab === 'editor'
                     ? 'border-[#FFC799] text-[#FFC799]'
-                    : 'border-transparent text-[#FFC799]/60 hover:text-[#FFC799]'
+                    : 'border-transparent text-[#A0A0A0] hover:text-[#FFC799]'
                 }`}
               >
                 Editor {editingPath && '(Editace)'}
@@ -243,7 +243,7 @@ export default function Home() {
                 className={`px-4 py-2 border-b-2 font-mono text-sm transition ${
                   activeTab === 'history'
                     ? 'border-[#FFC799] text-[#FFC799]'
-                    : 'border-transparent text-[#FFC799]/60 hover:text-[#FFC799]'
+                    : 'border-transparent text-[#A0A0A0] hover:text-[#FFC799]'
                 }`}
               >
                 Historie ({history.length})
@@ -255,27 +255,27 @@ export default function Home() {
               <div className="space-y-6">
                 {/* Title Input */}
                 <div>
-                  <label className="block text-xs font-mono text-[#FFC799]/60 mb-2 uppercase">
+                  <label className="block text-xs font-mono text-[#A0A0A0] mb-2 uppercase">
                     Nadpis Články
                   </label>
                   <Input
                     placeholder="Zadejte nadpis..."
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
-                    className="bg-[#1C1C1C] border-[#FFC799]/20 text-[#FFC799] placeholder:text-[#FFC799]/30 font-mono"
+                    className="bg-[#1A1A1A] border-[#1A1A1A] text-[#FFC799] placeholder:text-[#7E7E7E] font-mono"
                   />
                 </div>
 
                 {/* Author Input */}
                 <div>
-                  <label className="block text-xs font-mono text-[#FFC799]/60 mb-2 uppercase">
+                  <label className="block text-xs font-mono text-[#A0A0A0] mb-2 uppercase">
                     Autor (volitelně)
                   </label>
                   <Input
                     placeholder="Vaše jméno..."
                     value={authorName}
                     onChange={(e) => setAuthorName(e.target.value)}
-                    className="bg-[#1C1C1C] border-[#FFC799]/20 text-[#FFC799] placeholder:text-[#FFC799]/30 font-mono"
+                    className="bg-[#1A1A1A] border-[#1A1A1A] text-[#FFC799] placeholder:text-[#7E7E7E] font-mono"
                   />
                 </div>
 
@@ -300,7 +300,7 @@ export default function Home() {
 
                 {/* Content Textarea */}
                 <div>
-                  <label className="block text-xs font-mono text-[#FFC799]/60 mb-2 uppercase">
+                  <label className="block text-xs font-mono text-[#A0A0A0] mb-2 uppercase">
                     Obsah (Markdown)
                   </label>
                   <Textarea
@@ -308,10 +308,10 @@ export default function Home() {
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
                     disabled={isLoadingContent}
-                    className="bg-[#1C1C1C] border-[#FFC799]/20 text-[#FFC799] placeholder:text-[#FFC799]/30 font-mono min-h-96 resize-none disabled:opacity-50"
+                    className="bg-[#1A1A1A] border-[#1A1A1A] text-[#FFC799] placeholder:text-[#7E7E7E] font-mono min-h-96 resize-none disabled:opacity-50"
                   />
                   {isLoadingContent && (
-                    <div className="flex items-center gap-2 mt-2 text-[#FFC799]/60">
+                    <div className="flex items-center gap-2 mt-2 text-[#A0A0A0]">
                       <Loader2 className="w-4 h-4 animate-spin" />
                       <span className="text-sm">Načítám obsah...</span>
                     </div>
@@ -375,7 +375,7 @@ export default function Home() {
                     <Button
                       onClick={handleCancelEdit}
                       disabled={isPublishing}
-                      className="bg-[#1C1C1C] hover:bg-[#2C2C2C] text-[#FFC799] border border-[#FFC799]/30 font-mono"
+                      className="bg-[#1A1A1A] hover:bg-[#2C2C2C] text-[#FFC799] border border-[#FFC799]/30 font-mono"
                     >
                       <X className="w-4 h-4 mr-2" />
                       Zrušit editaci
@@ -384,7 +384,7 @@ export default function Home() {
                   <Button
                     onClick={handleClear}
                     disabled={isPublishing}
-                    className="bg-[#1C1C1C] hover:bg-[#2C2C2C] text-[#FFC799] border border-[#FFC799]/30 font-mono"
+                    className="bg-[#1A1A1A] hover:bg-[#2C2C2C] text-[#FFC799] border border-[#FFC799]/30 font-mono"
                   >
                     Vymazat
                   </Button>
@@ -396,17 +396,17 @@ export default function Home() {
             {activeTab === 'history' && (
               <div className="space-y-3">
                 {history.length === 0 ? (
-                  <p className="text-[#FFC799]/60 text-sm">Zatím žádné články v historii</p>
+                  <p className="text-[#A0A0A0] text-sm">Zatím žádné články v historii</p>
                 ) : (
                   history.map((entry, idx) => (
                     <div
                       key={idx}
-                      className="bg-[#1C1C1C] border border-[#FFC799]/20 p-4 rounded hover:border-[#FFC799]/40 transition"
+                      className="bg-[#1A1A1A] border border-[#1A1A1A] p-4 rounded hover:border-[#FFC799]/40 transition"
                     >
                       <div className="flex items-start justify-between gap-4">
                         <div className="flex-1 min-w-0">
                           <h3 className="font-mono text-[#FFC799] font-bold truncate">{entry.title}</h3>
-                          <p className="text-xs text-[#FFC799]/60 mt-1">{entry.date}</p>
+                          <p className="text-xs text-[#A0A0A0] mt-1">{entry.date}</p>
                           <a
                             href={entry.url}
                             target="_blank"
@@ -427,7 +427,7 @@ export default function Home() {
                           </button>
                           <button
                             onClick={() => copyToClipboard(entry.url)}
-                            className="p-2 bg-[#1C1C1C] hover:bg-[#2C2C2C] border border-[#FFC799]/30 text-[#FFC799] rounded transition"
+                            className="p-2 bg-[#1A1A1A] hover:bg-[#2C2C2C] border border-[#FFC799]/30 text-[#FFC799] rounded transition"
                             title="Zkopírovat"
                           >
                             <Copy className="w-4 h-4" />
@@ -436,7 +436,7 @@ export default function Home() {
                             href={entry.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="p-2 bg-[#1C1C1C] hover:bg-[#2C2C2C] border border-[#FFC799]/30 text-[#FFC799] rounded transition"
+                            className="p-2 bg-[#1A1A1A] hover:bg-[#2C2C2C] border border-[#FFC799]/30 text-[#FFC799] rounded transition"
                             title="Otevřít"
                           >
                             <ExternalLink className="w-4 h-4" />
@@ -464,9 +464,9 @@ export default function Home() {
 
           {/* Preview Panel */}
           <div className="col-span-1">
-            <div className="sticky top-8 bg-[#1C1C1C] border border-[#FFC799]/20 rounded p-6">
-              <h2 className="text-sm font-mono text-[#FFC799]/60 uppercase mb-4">Live Preview</h2>
-              <div className="prose prose-invert max-w-none text-[#FFC799]/80 text-sm">
+            <div className="sticky top-8 bg-[#1A1A1A] border border-[#1A1A1A] rounded p-6">
+              <h2 className="text-sm font-mono text-[#A0A0A0] uppercase mb-4">Live Preview</h2>
+              <div className="prose prose-invert max-w-none text-[#A0A0A0] text-sm">
                 {content ? (
                   <MarkdownPreview content={content} />
                 ) : (
@@ -481,9 +481,9 @@ export default function Home() {
       {/* Delete Confirmation Dialog */}
       {deleteConfirmPath && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-[#1C1C1C] border border-red-500/30 rounded-lg p-8 max-w-md w-full mx-4">
+          <div className="bg-[#1A1A1A] border border-red-500/30 rounded-lg p-8 max-w-md w-full mx-4">
             <h2 className="text-xl font-mono text-red-500 mb-4">Potvrdit smazani</h2>
-            <p className="text-[#FFC799]/80 mb-6">Opravdu chcete smazat tento clanek? Bude odstranen z Telegraphu a z vasi historie.</p>
+            <p className="text-[#A0A0A0] mb-6">Opravdu chcete smazat tento clanek? Bude odstranen z Telegraphu a z vasi historie.</p>
             <div className="flex gap-3">
               <Button
                 onClick={() => handleDeleteArticle(deleteConfirmPath)}
@@ -502,7 +502,7 @@ export default function Home() {
               <Button
                 onClick={() => setDeleteConfirmPath(null)}
                 disabled={isDeletingPath !== null}
-                className="flex-1 bg-[#1C1C1C] hover:bg-[#2C2C2C] text-[#FFC799] border border-[#FFC799]/30 font-mono"
+                className="flex-1 bg-[#1A1A1A] hover:bg-[#2C2C2C] text-[#FFC799] border border-[#FFC799]/30 font-mono"
               >
                 Zrusit
               </Button>
@@ -514,29 +514,29 @@ export default function Home() {
       {/* Account Dialog */}
       {showAccountDialog && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-[#1C1C1C] border border-[#FFC799]/20 rounded-lg p-8 max-w-md w-full mx-4">
+          <div className="bg-[#1A1A1A] border border-[#1A1A1A] rounded-lg p-8 max-w-md w-full mx-4">
             <h2 className="text-xl font-mono text-[#FFC799] mb-4">Vytvořit Telegraph účet</h2>
             <div className="space-y-4">
               <div>
-                <label className="block text-xs font-mono text-[#FFC799]/60 mb-2 uppercase">
+                <label className="block text-xs font-mono text-[#A0A0A0] mb-2 uppercase">
                   Krátké jméno účtu
                 </label>
                 <Input
                   placeholder="např. mujucet"
                   value={accountName}
                   onChange={(e) => setAccountName(e.target.value)}
-                  className="bg-[#101010] border-[#FFC799]/20 text-[#FFC799]"
+                  className="bg-[#101010] border-[#1A1A1A] text-[#FFC799]"
                 />
               </div>
               <div>
-                <label className="block text-xs font-mono text-[#FFC799]/60 mb-2 uppercase">
+                <label className="block text-xs font-mono text-[#A0A0A0] mb-2 uppercase">
                   Jméno autora (volitelně)
                 </label>
                 <Input
                   placeholder="Vaše jméno"
                   value={authorName}
                   onChange={(e) => setAuthorName(e.target.value)}
-                  className="bg-[#101010] border-[#FFC799]/20 text-[#FFC799]"
+                  className="bg-[#101010] border-[#1A1A1A] text-[#FFC799]"
                 />
               </div>
               <Button
