@@ -191,9 +191,9 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-[#101010] text-[#FFFFFF]">
+    <div className="min-h-screen bg-[#101010] text-[#FFFFFF] relative overflow-hidden">
       {/* Header */}
-      <div className="border-b border-[#1A1A1A] bg-[#101010] backdrop-blur-sm">
+      <div className="glass-header shadow-lg">
         <div className="max-w-7xl mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
             <div>
@@ -225,7 +225,7 @@ export default function Home() {
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="grid grid-cols-3 gap-8">
           {/* Editor Panel */}
-          <div className="col-span-2 space-y-6">
+          <div className="col-span-2 space-y-6 glass-panel p-6 rounded-2xl">
             {/* Tabs */}
             <div className="flex gap-2 border-b border-[#1A1A1A]">
               <button
@@ -252,7 +252,7 @@ export default function Home() {
 
             {/* Editor Tab */}
             {activeTab === 'editor' && (
-              <div className="space-y-6">
+              <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
                 {/* Title Input */}
                 <div>
                   <label className="block text-xs font-mono text-[#A0A0A0] mb-2 uppercase">
@@ -262,7 +262,7 @@ export default function Home() {
                     placeholder="Zadejte nadpis..."
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
-                    className="bg-[#1A1A1A] border-[#1A1A1A] text-[#FFC799] placeholder:text-[#7E7E7E] font-mono"
+                    className="bg-[#1A1A1A]/40 backdrop-blur-md border-[#FFFFFF]/5 shadow-inner transition-all focus:bg-[#1A1A1A]/60 focus:border-[#FFC799]/30 text-[#FFC799] placeholder:text-[#7E7E7E] font-mono"
                   />
                 </div>
 
@@ -275,7 +275,7 @@ export default function Home() {
                     placeholder="Vaše jméno..."
                     value={authorName}
                     onChange={(e) => setAuthorName(e.target.value)}
-                    className="bg-[#1A1A1A] border-[#1A1A1A] text-[#FFC799] placeholder:text-[#7E7E7E] font-mono"
+                    className="bg-[#1A1A1A]/40 backdrop-blur-md border-[#FFFFFF]/5 shadow-inner transition-all focus:bg-[#1A1A1A]/60 focus:border-[#FFC799]/30 text-[#FFC799] placeholder:text-[#7E7E7E] font-mono"
                   />
                 </div>
 
@@ -308,7 +308,7 @@ export default function Home() {
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
                     disabled={isLoadingContent}
-                    className="bg-[#1A1A1A] border-[#1A1A1A] text-[#FFC799] placeholder:text-[#7E7E7E] font-mono min-h-96 resize-none disabled:opacity-50"
+                    className="bg-[#1A1A1A]/40 backdrop-blur-md border-[#FFFFFF]/5 shadow-inner transition-all focus:bg-[#1A1A1A]/60 focus:border-[#FFC799]/30 text-[#FFC799] placeholder:text-[#7E7E7E] font-mono min-h-96 resize-none disabled:opacity-50"
                   />
                   {isLoadingContent && (
                     <div className="flex items-center gap-2 mt-2 text-[#A0A0A0]">

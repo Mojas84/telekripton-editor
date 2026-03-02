@@ -43,12 +43,12 @@
 }
 
 :root {
-  /* Vesper Light-ish (Derived from Vesper Dark for consistency) */
+  /* Vesper Light with Glass Feeling */
   --background: #FFFFFF;
   --foreground: #101010;
-  --card: #F5F5F5;
+  --card: rgba(255, 255, 255, 0.7);
   --card-foreground: #101010;
-  --popover: #FFFFFF;
+  --popover: rgba(255, 255, 255, 0.8);
   --popover-foreground: #101010;
   --primary: #FFC799;
   --primary-foreground: #101010;
@@ -60,28 +60,28 @@
   --accent-foreground: #101010;
   --destructive: #f5a191;
   --destructive-foreground: #FFFFFF;
-  --border: #E0E0E0;
-  --input: #E0E0E0;
+  --border: rgba(0, 0, 0, 0.1);
+  --input: rgba(0, 0, 0, 0.05);
   --ring: #FFC799;
-  --radius: 0.5rem;
+  --radius: 0.75rem;
   
-  --sidebar: #F5F5F5;
+  --sidebar: rgba(245, 245, 245, 0.5);
   --sidebar-foreground: #101010;
   --sidebar-primary: #FFC799;
   --sidebar-primary-foreground: #101010;
   --sidebar-accent: #282828;
   --sidebar-accent-foreground: #FFFFFF;
-  --sidebar-border: #E0E0E0;
+  --sidebar-border: rgba(0, 0, 0, 0.1);
   --sidebar-ring: #FFC799;
 }
 
 .dark {
-  /* Vesper Dark (Official Colors) */
+  /* Vesper Dark with Liquid Glass Feeling */
   --background: #101010;
   --foreground: #FFFFFF;
-  --card: #1A1A1A;
+  --card: rgba(26, 26, 26, 0.6);
   --card-foreground: #FFFFFF;
-  --popover: #101010;
+  --popover: rgba(16, 16, 16, 0.8);
   --popover-foreground: #FFFFFF;
   --primary: #FFC799;
   --primary-foreground: #101010;
@@ -93,17 +93,17 @@
   --accent-foreground: #FFC799;
   --destructive: #f5a191;
   --destructive-foreground: #FFFFFF;
-  --border: #1A1A1A;
-  --input: #1A1A1A;
+  --border: rgba(255, 255, 255, 0.08);
+  --input: rgba(255, 255, 255, 0.05);
   --ring: #FFC799;
   
-  --sidebar: #101010;
+  --sidebar: rgba(16, 16, 16, 0.4);
   --sidebar-foreground: #A0A0A0;
   --sidebar-primary: #FFC799;
   --sidebar-primary-foreground: #101010;
   --sidebar-accent: #282828;
   --sidebar-accent-foreground: #FFFFFF;
-  --sidebar-border: #1A1A1A;
+  --sidebar-border: rgba(255, 255, 255, 0.08);
   --sidebar-ring: #FFC799;
 }
 
@@ -112,11 +112,19 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground selection:bg-primary/30;
+    background-image: radial-gradient(circle at top right, rgba(255, 199, 153, 0.03), transparent 40%),
+                      radial-gradient(circle at bottom left, rgba(153, 255, 228, 0.02), transparent 40%);
+    background-attachment: fixed;
   }
+  
+  .dark body {
+    background-image: radial-gradient(circle at top right, rgba(255, 199, 153, 0.05), transparent 40%),
+                      radial-gradient(circle at bottom left, rgba(153, 255, 228, 0.03), transparent 40%);
+  }
+
   button:not(:disabled),
   [role="button"]:not([aria-disabled="true"]),
-  [type="button"]:not(:disabled),
   [type="button"]:not(:disabled),
   [type="submit"]:not(:disabled),
   [type="reset"]:not(:disabled),
@@ -129,17 +137,20 @@
 }
 
 @layer components {
+  .glass-panel {
+    @apply backdrop-blur-xl bg-card border border-border shadow-2xl;
+  }
+  
+  .glass-header {
+    @apply backdrop-blur-md bg-background/60 border-b border-border sticky top-0 z-50;
+  }
+
   .container {
     width: 100%;
     margin-left: auto;
     margin-right: auto;
     padding-left: 1rem;
     padding-right: 1rem;
-  }
-
-  .flex {
-    min-height: 0;
-    min-width: 0;
   }
 
   @media (min-width: 640px) {
