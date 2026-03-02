@@ -227,7 +227,7 @@ export default function Home() {
           {/* Editor Panel */}
           <div className="col-span-2 space-y-6 glass-panel p-6 rounded-2xl">
             {/* Tabs */}
-            <div className="flex gap-2 border-b border-[#1A1A1A]">
+            <div className="flex gap-2 border-b border-[#FFFFFF]/10">
               <button
                 onClick={() => setActiveTab('editor')}
                 className={`px-4 py-2 border-b-2 font-mono text-sm transition ${
@@ -262,7 +262,7 @@ export default function Home() {
                     placeholder="Zadejte nadpis..."
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
-                    className="bg-[#101010]/30 backdrop-blur-md border-[#FFFFFF]/5 shadow-inner transition-all focus:bg-[#1A1A1A]/40 focus:border-[#FFC799]/40 text-[#FFC799] placeholder:text-[#7E7E7E] font-mono"
+                    className="bg-[#101010] border-[#FFFFFF]/10 shadow-sm transition-all focus:border-[#FFC799]/50 focus:ring-1 focus:ring-[#FFC799]/20 text-[#FFC799] placeholder:text-[#7E7E7E] font-mono"
                   />
                 </div>
 
@@ -275,7 +275,7 @@ export default function Home() {
                     placeholder="Vaše jméno..."
                     value={authorName}
                     onChange={(e) => setAuthorName(e.target.value)}
-                    className="bg-[#101010]/30 backdrop-blur-md border-[#FFFFFF]/5 shadow-inner transition-all focus:bg-[#1A1A1A]/40 focus:border-[#FFC799]/40 text-[#FFC799] placeholder:text-[#7E7E7E] font-mono"
+                    className="bg-[#101010] border-[#FFFFFF]/10 shadow-sm transition-all focus:border-[#FFC799]/50 focus:ring-1 focus:ring-[#FFC799]/20 text-[#FFC799] placeholder:text-[#7E7E7E] font-mono"
                   />
                 </div>
 
@@ -308,7 +308,7 @@ export default function Home() {
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
                     disabled={isLoadingContent}
-                    className="bg-[#101010]/30 backdrop-blur-md border-[#FFFFFF]/5 shadow-inner transition-all focus:bg-[#1A1A1A]/40 focus:border-[#FFC799]/40 text-[#FFC799] placeholder:text-[#7E7E7E] font-mono min-h-96 resize-none disabled:opacity-50"
+                    className="bg-[#101010] border-[#FFFFFF]/10 shadow-sm transition-all focus:border-[#FFC799]/50 focus:ring-1 focus:ring-[#FFC799]/20 text-[#FFC799] placeholder:text-[#7E7E7E] font-mono min-h-96 resize-none disabled:opacity-50"
                   />
                   {isLoadingContent && (
                     <div className="flex items-center gap-2 mt-2 text-[#A0A0A0]">
@@ -375,7 +375,7 @@ export default function Home() {
                     <Button
                       onClick={handleCancelEdit}
                       disabled={isPublishing}
-                      className="bg-[#1A1A1A] hover:bg-[#2C2C2C] text-[#FFC799] border border-[#FFC799]/30 font-mono"
+                      className="bg-[#101010] hover:bg-[#2C2C2C] text-[#FFC799] border border-[#FFC799]/30 font-mono"
                     >
                       <X className="w-4 h-4 mr-2" />
                       Zrušit editaci
@@ -384,7 +384,7 @@ export default function Home() {
                   <Button
                     onClick={handleClear}
                     disabled={isPublishing}
-                    className="bg-[#1A1A1A] hover:bg-[#2C2C2C] text-[#FFC799] border border-[#FFC799]/30 font-mono"
+                    className="bg-[#101010] hover:bg-[#2C2C2C] text-[#FFC799] border border-[#FFC799]/30 font-mono"
                   >
                     Vymazat
                   </Button>
@@ -401,7 +401,7 @@ export default function Home() {
                   history.map((entry, idx) => (
                     <div
                       key={idx}
-                      className="bg-[#1A1A1A] border border-[#1A1A1A] p-4 rounded hover:border-[#FFC799]/40 transition"
+                      className="bg-[#101010] border border-[#FFFFFF]/10 p-4 rounded hover:border-[#FFC799]/40 transition"
                     >
                       <div className="flex items-start justify-between gap-4">
                         <div className="flex-1 min-w-0">
@@ -427,7 +427,7 @@ export default function Home() {
                           </button>
                           <button
                             onClick={() => copyToClipboard(entry.url)}
-                            className="p-2 bg-[#1A1A1A] hover:bg-[#2C2C2C] border border-[#FFC799]/30 text-[#FFC799] rounded transition"
+                            className="p-2 bg-[#101010] hover:bg-[#2C2C2C] border border-[#FFC799]/30 text-[#FFC799] rounded transition"
                             title="Zkopírovat"
                           >
                             <Copy className="w-4 h-4" />
@@ -436,7 +436,7 @@ export default function Home() {
                             href={entry.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="p-2 bg-[#1A1A1A] hover:bg-[#2C2C2C] border border-[#FFC799]/30 text-[#FFC799] rounded transition"
+                            className="p-2 bg-[#101010] hover:bg-[#2C2C2C] border border-[#FFC799]/30 text-[#FFC799] rounded transition"
                             title="Otevřít"
                           >
                             <ExternalLink className="w-4 h-4" />
@@ -464,7 +464,7 @@ export default function Home() {
 
           {/* Preview Panel */}
           <div className="col-span-1">
-            <div className="sticky top-8 bg-[#1A1A1A] border border-[#1A1A1A] rounded p-6">
+            <div className="sticky top-8 bg-[#101010] border border-[#FFFFFF]/10 rounded p-6">
               <h2 className="text-sm font-mono text-[#A0A0A0] uppercase mb-4">Live Preview</h2>
               <div className="prose prose-invert max-w-none text-[#A0A0A0] text-sm">
                 {content ? (
@@ -481,7 +481,7 @@ export default function Home() {
       {/* Delete Confirmation Dialog */}
       {deleteConfirmPath && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-[#1A1A1A] border border-red-500/30 rounded-lg p-8 max-w-md w-full mx-4">
+          <div className="bg-[#101010] border border-red-500/30 rounded-lg p-8 max-w-md w-full mx-4">
             <h2 className="text-xl font-mono text-red-500 mb-4">Potvrdit smazani</h2>
             <p className="text-[#A0A0A0] mb-6">Opravdu chcete smazat tento clanek? Bude odstranen z Telegraphu a z vasi historie.</p>
             <div className="flex gap-3">
@@ -502,7 +502,7 @@ export default function Home() {
               <Button
                 onClick={() => setDeleteConfirmPath(null)}
                 disabled={isDeletingPath !== null}
-                className="flex-1 bg-[#1A1A1A] hover:bg-[#2C2C2C] text-[#FFC799] border border-[#FFC799]/30 font-mono"
+                className="flex-1 bg-[#101010] hover:bg-[#2C2C2C] text-[#FFC799] border border-[#FFC799]/30 font-mono"
               >
                 Zrusit
               </Button>
@@ -514,7 +514,7 @@ export default function Home() {
       {/* Account Dialog */}
       {showAccountDialog && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-[#1A1A1A] border border-[#1A1A1A] rounded-lg p-8 max-w-md w-full mx-4">
+          <div className="bg-[#101010] border border-[#FFFFFF]/10 rounded-lg p-8 max-w-md w-full mx-4">
             <h2 className="text-xl font-mono text-[#FFC799] mb-4">Vytvořit Telegraph účet</h2>
             <div className="space-y-4">
               <div>
@@ -525,7 +525,7 @@ export default function Home() {
                   placeholder="např. mujucet"
                   value={accountName}
                   onChange={(e) => setAccountName(e.target.value)}
-                  className="bg-[#101010] border-[#1A1A1A] text-[#FFC799]"
+                  className="bg-[#101010] border-[#FFFFFF]/10 text-[#FFC799]"
                 />
               </div>
               <div>
@@ -536,7 +536,7 @@ export default function Home() {
                   placeholder="Vaše jméno"
                   value={authorName}
                   onChange={(e) => setAuthorName(e.target.value)}
-                  className="bg-[#101010] border-[#1A1A1A] text-[#FFC799]"
+                  className="bg-[#101010] border-[#FFFFFF]/10 text-[#FFC799]"
                 />
               </div>
               <Button
