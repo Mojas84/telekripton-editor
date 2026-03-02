@@ -3,6 +3,7 @@ import {
   createAccount,
   publishPage,
   editPage,
+  getPage,
   markdownToTelegraphContent,
   TelegraphAccount,
   TelegraphPage,
@@ -154,6 +155,23 @@ export function useTelegraph(): UseTelegraphReturn {
     }
   };
 
+  const getPageData = async (
+    path: string,
+    returnContent: boolean = true
+  ): Promise<TelegraphPage | null> => {
+    try {
+      const response = await getPage(path, returnContent);
+      if (!response.ok || !response.result) {
+        throw new Error(response.error || 'Chyba při načítání stránky');
+      }
+      return response.result;
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Neznámá chyba';
+      setError(errorMessage);
+      throw err;
+    }
+  };
+
   const logout = () => {
     setAccount(null);
     setError(null);
@@ -169,6 +187,6 @@ export function useTelegraph(): UseTelegraphReturn {
     publishArticle,
     editArticle,
     logout,
-    getPage,
+    getPage: getPageData,
   };
 }

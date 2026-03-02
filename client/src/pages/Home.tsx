@@ -27,6 +27,7 @@ export default function Home() {
   const [publishedUrl, setPublishedUrl] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'editor' | 'history'>('editor');
   const [editingPath, setEditingPath] = useState<string | null>(null);
+  const [isLoadingContent, setIsLoadingContent] = useState(false);
 
   // Load history from localStorage
   useEffect(() => {
@@ -110,9 +111,7 @@ export default function Home() {
           localStorage.setItem('telegraph_history', JSON.stringify(updatedHistory));
         }
 
-        // Clear form
-// setTitle('');
-// setContent('');
+        // KEEP form data - don't clear it
       }
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Chyba při publikování');
@@ -123,28 +122,34 @@ export default function Home() {
 
   const handleEdit = (entry: HistoryEntry) => {
     setTitle(entry.title);
-    // setContent(""); // Bude načteno z API
+    setContent(''); // Clear first, will be loaded from API
     setEditingPath(entry.path);
     setActiveTab('editor');
     setPublishedUrl(entry.url);
-    toast.info("Načítám článek pro editaci...");
+    toast.info('Načítám článek pro editaci...');
     fetchArticleContent(entry.path);
   };
 
   const fetchArticleContent = async (path: string) => {
+    setIsLoadingContent(true);
     try {
       const page = await telegraph.getPage(path, true);
+      console.log('Loaded page:', page);
       if (page && page.content) {
         // Convert Telegraph content nodes back to markdown
         const markdownContent = telegraphContentToMarkdown(page.content);
+        console.log('Converted markdown:', markdownContent);
         setContent(markdownContent);
+        toast.success('Článek načten pro editaci!');
       } else {
-        toast.error("Nepodařilo se načíst obsah článku.");
+        toast.error('Nepodařilo se načíst obsah článku.');
       }
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Chyba při načítání obsahu článku.");
+      console.error('Error fetching article:', error);
+      toast.error(error instanceof Error ? error.message : 'Chyba při načítání obsahu článku.');
+    } finally {
+      setIsLoadingContent(false);
     }
-  };
   };
 
   const handleCancelEdit = () => {
@@ -284,8 +289,15 @@ export default function Home() {
                     placeholder="Napište svůj článek zde... Podporujeme **bold**, *italic*, `code`, [links](url) a # nadpisy"
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
-                    className="bg-[#1C1C1C] border-[#FFC799]/20 text-[#FFC799] placeholder:text-[#FFC799]/30 font-mono min-h-96 resize-none"
+                    disabled={isLoadingContent}
+                    className="bg-[#1C1C1C] border-[#FFC799]/20 text-[#FFC799] placeholder:text-[#FFC799]/30 font-mono min-h-96 resize-none disabled:opacity-50"
                   />
+                  {isLoadingContent && (
+                    <div className="flex items-center gap-2 mt-2 text-[#FFC799]/60">
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span className="text-sm">Načítám obsah...</span>
+                    </div>
+                  )}
                 </div>
 
                 {/* Published URL Display */}
@@ -306,47 +318,57 @@ export default function Home() {
                       <button
                         onClick={() => copyToClipboard(publishedUrl)}
                         className="p-2 hover:bg-[#FE7300]/20 rounded transition"
-                        title="Zkopírovat odkaz"
+                        title="Zkopírovat"
                       >
-                        <Copy size={16} className="text-[#FE7300]" />
+                        <Copy className="w-4 h-4 text-[#FE7300]" />
                       </button>
                       <a
                         href={publishedUrl}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="p-2 hover:bg-[#FE7300]/20 rounded transition"
-                        title="Otevřít v novém okně"
+                        title="Otevřít"
                       >
-                        <ExternalLink size={16} className="text-[#FE7300]" />
+                        <ExternalLink className="w-4 h-4 text-[#FE7300]" />
                       </a>
                     </div>
                   </div>
                 )}
 
                 {/* Action Buttons */}
-                <div className="flex gap-4">
+                <div className="flex gap-3">
                   <Button
                     onClick={handlePublish}
-                    disabled={isPublishing || telegraph.loading}
-                    className="flex-1 bg-[#FFC799] hover:bg-[#FFCCAA] text-black font-bold py-6 font-mono text-lg"
+                    disabled={isPublishing || isLoadingContent}
+                    className="flex-1 bg-[#FFC799] hover:bg-[#FFCCAA] text-black font-bold font-mono"
                   >
                     {isPublishing ? (
                       <>
-                        <Loader2 size={18} className="animate-spin mr-2" />
-                        {editingPath ? 'Aktualizování...' : 'Publikování...'}
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        {editingPath ? 'Aktualizuji...' : 'Publikuji...'}
                       </>
                     ) : (
                       <>
-                        ➤ {editingPath ? 'Aktualizovat' : 'Publikovat'}
+                        <span>▶ {editingPath ? 'Aktualizovat' : 'Publikovat'}</span>
                       </>
                     )}
                   </Button>
+                  {editingPath && (
+                    <Button
+                      onClick={handleCancelEdit}
+                      disabled={isPublishing}
+                      className="bg-[#1C1C1C] hover:bg-[#2C2C2C] text-[#FFC799] border border-[#FFC799]/30 font-mono"
+                    >
+                      <X className="w-4 h-4 mr-2" />
+                      Zrušit editaci
+                    </Button>
+                  )}
                   <Button
-                    onClick={editingPath ? handleCancelEdit : handleClear}
-                    variant="outline"
-                    className="flex-1 border-[#FFC799]/30 text-[#FFC799] hover:bg-[#FFC799]/10 py-6 font-mono text-lg"
+                    onClick={handleClear}
+                    disabled={isPublishing}
+                    className="bg-[#1C1C1C] hover:bg-[#2C2C2C] text-[#FFC799] border border-[#FFC799]/30 font-mono"
                   >
-                    {editingPath ? '✕ Zrušit' : '✕ Vymazat'}
+                    Vymazat
                   </Button>
                 </div>
               </div>
@@ -356,21 +378,22 @@ export default function Home() {
             {activeTab === 'history' && (
               <div className="space-y-3">
                 {history.length === 0 ? (
-                  <p className="text-[#FFC799]/40 text-sm">Zatím žádné publikované články...</p>
+                  <p className="text-[#FFC799]/60 text-sm">Zatím žádné články v historii</p>
                 ) : (
                   history.map((entry, idx) => (
-                    <div key={idx} className="bg-[#1C1C1C]/50 border border-[#FFC799]/20 p-3 rounded">
-                      <div className="flex items-start justify-between gap-3">
+                    <div
+                      key={idx}
+                      className="bg-[#1C1C1C] border border-[#FFC799]/20 p-4 rounded hover:border-[#FFC799]/40 transition"
+                    >
+                      <div className="flex items-start justify-between gap-4">
                         <div className="flex-1 min-w-0">
-                          <p className="text-[#FFC799] font-mono text-sm font-bold truncate">
-                            {entry.title}
-                          </p>
-                          <p className="text-[#FFC799]/60 font-mono text-xs mt-1">{entry.date}</p>
+                          <h3 className="font-mono text-[#FFC799] font-bold truncate">{entry.title}</h3>
+                          <p className="text-xs text-[#FFC799]/60 mt-1">{entry.date}</p>
                           <a
                             href={entry.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-[#FE7300] hover:text-[#FFCCAA] font-mono text-xs underline break-all mt-2 inline-block"
+                            className="text-xs text-[#FE7300] hover:text-[#FFCCAA] break-all underline mt-2 inline-block"
                           >
                             {entry.url}
                           </a>
@@ -378,18 +401,28 @@ export default function Home() {
                         <div className="flex gap-2 flex-shrink-0">
                           <button
                             onClick={() => handleEdit(entry)}
-                            className="p-2 hover:bg-[#FFC799]/20 rounded transition"
+                            disabled={isLoadingContent}
+                            className="p-2 bg-[#FFC799] hover:bg-[#FFCCAA] text-black rounded transition disabled:opacity-50"
                             title="Editovat"
                           >
-                            <Edit2 size={16} className="text-[#FFC799]" />
+                            <Edit2 className="w-4 h-4" />
                           </button>
                           <button
                             onClick={() => copyToClipboard(entry.url)}
-                            className="p-2 hover:bg-[#FFC799]/20 rounded transition"
-                            title="Zkopírovat odkaz"
+                            className="p-2 bg-[#1C1C1C] hover:bg-[#2C2C2C] border border-[#FFC799]/30 text-[#FFC799] rounded transition"
+                            title="Zkopírovat"
                           >
-                            <Copy size={16} className="text-[#FFC799]" />
+                            <Copy className="w-4 h-4" />
                           </button>
+                          <a
+                            href={entry.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-2 bg-[#1C1C1C] hover:bg-[#2C2C2C] border border-[#FFC799]/30 text-[#FFC799] rounded transition"
+                            title="Otevřít"
+                          >
+                            <ExternalLink className="w-4 h-4" />
+                          </a>
                         </div>
                       </div>
                     </div>
@@ -401,21 +434,15 @@ export default function Home() {
 
           {/* Preview Panel */}
           <div className="col-span-1">
-            <div className="bg-[#1C1C1C]/50 border border-[#FFC799]/20 rounded p-4 sticky top-8 max-h-[calc(100vh-120px)] overflow-y-auto">
-              <h2 className="text-sm font-mono text-[#FFC799] uppercase mb-4">Live Preview</h2>
-
-              {content.trim() ? (
-                <div className="prose prose-invert max-w-none text-[#FFC799] prose-headings:text-[#FFC799] prose-strong:text-[#FFC799] prose-em:text-[#FFC799] prose-code:text-[#FE7300] prose-a:text-[#FE7300] prose-a:hover:text-[#FFCCAA]">
+            <div className="sticky top-8 bg-[#1C1C1C] border border-[#FFC799]/20 rounded p-6">
+              <h2 className="text-sm font-mono text-[#FFC799]/60 uppercase mb-4">Live Preview</h2>
+              <div className="prose prose-invert max-w-none text-[#FFC799]/80 text-sm">
+                {content ? (
                   <MarkdownPreview content={content} />
-                </div>
-              ) : (
-                <div className="text-[#FFC799]/40 text-xs space-y-2">
-                  <p>Obsah se bude zobrazovat zde...</p>
-                  <hr className="border-[#FFC799]/20 my-3" />
-                  <p className="font-mono text-[#FFC799]/60">Nadpis: {title || '(prázdný)'}</p>
-                  <p className="font-mono text-[#FFC799]/60">Autor: {authorName || telegraph.account?.author_name || '(prázdný)'}</p>
-                </div>
-              )}
+                ) : (
+                  <p className="text-[#FFC799]/40 italic">Obsah se bude zobrazovat zde...</p>
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -424,59 +451,41 @@ export default function Home() {
       {/* Account Dialog */}
       {showAccountDialog && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-[#1C1C1C] border border-[#FFC799]/20 rounded p-6 max-w-md w-full mx-4">
-            <h2 className="text-xl font-bold text-[#FFC799] font-mono mb-2">Vytvořit Telegraph Účet</h2>
-            <p className="text-[#FFC799]/60 text-sm mb-4">Zadejte jméno pro váš Telegraph účet</p>
-
+          <div className="bg-[#1C1C1C] border border-[#FFC799]/20 rounded-lg p-8 max-w-md w-full mx-4">
+            <h2 className="text-xl font-mono text-[#FFC799] mb-4">Vytvořit Telegraph účet</h2>
             <div className="space-y-4">
               <div>
-                <label className="block text-xs font-mono text-[#FFC799]/60 mb-2 uppercase">Jméno Účtu</label>
+                <label className="block text-xs font-mono text-[#FFC799]/60 mb-2 uppercase">
+                  Krátké jméno účtu
+                </label>
                 <Input
-                  placeholder="Např. moj-blog"
+                  placeholder="např. mujucet"
                   value={accountName}
                   onChange={(e) => setAccountName(e.target.value)}
-                  className="bg-[#101010] border-[#FFC799]/20 text-[#FFC799] placeholder:text-[#FFC799]/30 font-mono"
+                  className="bg-[#101010] border-[#FFC799]/20 text-[#FFC799]"
                 />
               </div>
-
-              <div className="flex gap-2">
-                <Button
-                  onClick={handleInitializeAccount}
-                  disabled={telegraph.loading}
-                  className="flex-1 bg-[#FFC799] hover:bg-[#FFCCAA] text-black font-bold font-mono"
-                >
-                  {telegraph.loading ? (
-                    <>
-                      <Loader2 size={16} className="animate-spin mr-2" />
-                      Vytváření...
-                    </>
-                  ) : (
-                    'Vytvořit'
-                  )}
-                </Button>
-                <Button
-                  onClick={() => setShowAccountDialog(false)}
-                  variant="outline"
-                  className="flex-1 border-[#FFC799]/30 text-[#FFC799] hover:bg-[#FFC799]/10 font-mono"
-                >
-                  Zrušit
-                </Button>
+              <div>
+                <label className="block text-xs font-mono text-[#FFC799]/60 mb-2 uppercase">
+                  Jméno autora (volitelně)
+                </label>
+                <Input
+                  placeholder="Vaše jméno"
+                  value={authorName}
+                  onChange={(e) => setAuthorName(e.target.value)}
+                  className="bg-[#101010] border-[#FFC799]/20 text-[#FFC799]"
+                />
               </div>
-
-              {telegraph.error && (
-                <p className="text-[#FE8080] text-xs font-mono">{telegraph.error}</p>
-              )}
+              <Button
+                onClick={handleInitializeAccount}
+                className="w-full bg-[#FFC799] hover:bg-[#FFCCAA] text-black font-bold font-mono"
+              >
+                Vytvořit účet
+              </Button>
             </div>
           </div>
         </div>
       )}
-
-      {/* Footer */}
-      <div className="border-t border-[#FFC799]/20 bg-black/40 backdrop-blur-sm mt-12">
-        <div className="max-w-7xl mx-auto px-4 py-4 text-center text-xs text-[#FFC799]/40 font-mono">
-          Made with Manus
-        </div>
-      </div>
     </div>
   );
 }
