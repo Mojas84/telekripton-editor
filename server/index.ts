@@ -6,27 +6,27 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-async function startServer() {
-    const app = express();
-    const server = createServer(app);
+const app = express();
+const server = createServer(app);
 
-  // Serve static files from dist/public
-  // On Vercel, the file structure for Serverless Functions is different
-  const staticPath = path.resolve(__dirname, "..", "dist", "public");
+// Serve static files from dist/public
+const staticPath = path.resolve(__dirname, "..", "dist", "public");
+app.use(express.static(staticPath));
 
-  app.use(express.static(staticPath));
+// Handle client-side routing - serve index.html for all routes
+app.get("*", (_req, res) => {
+  // If we are on Vercel, the static files are served automatically, 
+  // but for local dev or custom routes, we keep this.
+  const indexPath = path.join(staticPath, "index.html");
+  res.sendFile(indexPath);
+});
 
-  // Handle client-side routing - serve index.html for all routes
-  app.get("*", (_req, res) => {
-        res.sendFile(path.join(staticPath, "index.html"));
-  });
+const port = process.env.PORT || 3000;
 
-  const port = process.env.PORT || 3000;
-
+if (!process.env.VERCEL) {
   server.listen(port, () => {
-        console.log(`Server running on http://localhost:${port}/`);
+    console.log(`Server running on http://localhost:${port}/`);
   });
 }
 
-startServer().catch(console.error);
-export default startServer;
+export default app;
