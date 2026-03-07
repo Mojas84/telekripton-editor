@@ -2,22 +2,12 @@
   "version": 2,
   "installCommand": "pnpm install --no-frozen-lockfile",
   "buildCommand": "pnpm run build",
-  "serverless": {
-    "runtime": "nodejs20.x"
-  },
   "functions": {
-    "dist/index.js": {
+    "api/index.js": {
       "runtime": "nodejs20.x"
     }
   },
-  "routes": [
-    {
-      "src": "/assets/(.*)",
-      "dest": "/dist/public/assets/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/dist/index.js"
-    }
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/api/index.js" }
   ]
 }
